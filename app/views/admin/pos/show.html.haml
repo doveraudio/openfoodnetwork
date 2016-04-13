@@ -1,0 +1,14 @@
+= admin_inject_json_ams_array "admin.pos", "addresses", @addresses, Api::Admin::AddressSerializer
+= admin_inject_json_ams_array "admin.pos", "customers", @customers, Api::Admin::CustomerSerializer
+= admin_inject_json_ams_array "admin.pos", "orders", @orders, Api::Admin::OrderSerializer
+= admin_inject_json_ams_array "admin.pos", "line_items", @line_items, Api::Admin::LineItemSerializer
+= admin_inject_json_ams_array "admin.pos", "variants", @variants, Api::Admin::ForPos::VariantSerializer
+= admin_inject_json_ams_array "admin.pos", "products", @products, Api::Admin::ForPos::ProductSerializer
+
+
+.row.pos{ ng: { app: "admin.pos", controller: "POSCtrl" } }
+  .small-12.columns
+
+    %h1 POS!
+
+    %input.order-select{ type: 'hidden', ng: { model: "currentOrder" }, data: "orders" }

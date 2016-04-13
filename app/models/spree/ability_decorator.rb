@@ -226,6 +226,9 @@ class AbilityDecorator
 
     can [:create], Customer
     can [:admin, :index, :update, :destroy], Customer, enterprise_id: Enterprise.managed_by(user).pluck(:id)
+
+    # POS Page
+    can [:admin, :show], :pos
   end
 
 

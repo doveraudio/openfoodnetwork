@@ -151,6 +151,8 @@ Openfoodnetwork::Application.routes.draw do
     end
 
     resource :invoice_settings, only: [:edit, :update]
+
+    resource :pos, only: [:show], controller: 'pos'
   end
 
   namespace :api do
