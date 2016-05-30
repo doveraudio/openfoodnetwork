@@ -1,3 +1,38 @@
 .pos{
+  .fullwidth {
+    width: "100%";
+  }
 
+  .items {
+    overflow-y: scroll;
+    height: 80vh;
+    .item {
+      .item-name {
+        white-space: nowrap;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  .variants{
+    overflow-y: scroll;
+    height: 80vh;
+    .variant {
+      padding-top: 10px;
+      border: 1px solid #ffffff;
+
+      &:hover {
+        border: 1px solid #c6c6c6;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      .product-name, .variant-name {
+        white-space: nowrap;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
 }

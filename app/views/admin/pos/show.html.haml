@@ -1,14 +1,49 @@
 = admin_inject_json_ams_array "admin.pos", "addresses", @addresses, Api::Admin::AddressSerializer
 = admin_inject_json_ams_array "admin.pos", "customers", @customers, Api::Admin::CustomerSerializer
 = admin_inject_json_ams_array "admin.pos", "orders", @orders, Api::Admin::OrderSerializer
-= admin_inject_json_ams_array "admin.pos", "line_items", @line_items, Api::Admin::LineItemSerializer
+= admin_inject_json_ams_array "admin.pos", "lineItems", @line_items, Api::Admin::ForPos::LineItemSerializer
 = admin_inject_json_ams_array "admin.pos", "variants", @variants, Api::Admin::ForPos::VariantSerializer
 = admin_inject_json_ams_array "admin.pos", "products", @products, Api::Admin::ForPos::ProductSerializer
 
 
-.row.pos{ ng: { app: "admin.pos", controller: "POSCtrl" } }
-  .small-12.columns
+.pos{ ng: { app: "admin.pos", controller: "POSCtrl" } }
+  .row
+    .small-5.columns
+      %input.order-select{ type: 'hidden', ng: { model: "currentOrderID" }, data: "orders" }
 
-    %h1 POS!
+    .small-7.columns
+      %input{ type: "text", placeholder: "Search for a product", ng: { model: 'query' } }
 
-    %input.order-select{ type: 'hidden', ng: { model: "currentOrder" }, data: "orders" }
+  .row
+    .small-5.columns.items
+      .no-order-selected{ ng: { if: "!currentOrder" } }
+        No Order Selected
+      %table.fullwidth{ ng: { if: "currentOrder" } }
+        %tr
+          %th Item
+          %th Weight/Vol
+          %th Qty
+          %th Price
+          %th Total
+        %tr.item{ ng: {repeat: "lineItem in currentOrder.lineItems" } }
+          %td.item-name
+            %strong {{ lineItem.variant.product.name }}
+            %br
+            {{ lineItem.variant.name_to_display }}
+          %td
+            {{ lineItem.options_text }}
+          %td
+            {{ lineItem.quantity }}
+          %td
+            {{ lineItem.price }}
+          %td
+            %strong {{ lineItem.price * lineItem.quantity }}
+
+    .small-7.columns.variants
+      %ul.small-block-grid-5
+        %li.variant.text-center{ ng: { repeat: "variant in variants | posFilter:query" }
+          %img{ ng: { src: "{{::variant.product.primaryImageOrMissing}}" } }
+          .product-name
+            %strong {{ ::variant.product.name }}
+          .variant-name
+            {{ ::variant.full_name }}

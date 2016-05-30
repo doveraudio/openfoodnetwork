@@ -1,1 +1,1 @@
-angular.module("admin.pos", ["admin.indexUtils"])
+angular.module("admin.pos", ['ngSanitize'])
