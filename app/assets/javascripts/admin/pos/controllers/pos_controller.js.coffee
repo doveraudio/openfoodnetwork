@@ -10,3 +10,9 @@ angular.module("admin.pos").controller "POSCtrl", ($scope, addresses, customers,
 
   $scope.$watch 'currentOrderID', (newVal, oldVal) ->
     $scope.currentOrder = Orders.byID[newVal]
+
+  $scope.addLineItem = (variant) ->
+    LineItems.add($scope.currentOrder, variant)
+
+  $scope.removeLineItem = (lineItem) ->
+    LineItems.remove(lineItem)

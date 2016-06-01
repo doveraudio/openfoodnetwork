@@ -26,6 +26,13 @@ Spree::Admin::LineItemsController.class_eval do
     if @order.save
       respond_with(@line_item) do |format|
         format.html { render :partial => 'spree/admin/orders/form', :locals => { :order => @order.reload } }
+        format.json do
+          if request.referrer == main_app.admin_pos_url
+            render json: @line_item, serializer: Api::Admin::ForPos::LineItemSerializer
+          else
+            render_as_json @line_item
+          end
+        end
       end
     else
       respond_with(@line_item) do |format|

@@ -6,7 +6,7 @@ class Admin::PosController < Spree::Admin::BaseController
     @order_cycle = OrderCycle.with_distributor(@shop).order('orders_close_at ASC').last
 
 
-    @addresses = Spree::Address.joins(shipments: :order).where(spree_orders: { distributor_id: @shop.id})
+    @addresses = Spree::Address.preload(:state, :country).joins(shipments: :order).where(spree_orders: { distributor_id: @shop.id})
     @customers = Customer.where(enterprise_id: @shop.id)
     @orders = Spree::Order.complete.where(distributor_id: @shop.id, order_cycle_id: @order_cycle.id)
     @line_items = Spree::LineItem.where(order_id: @orders)

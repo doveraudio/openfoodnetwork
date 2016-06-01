@@ -5,7 +5,6 @@
 = admin_inject_json_ams_array "admin.pos", "variants", @variants, Api::Admin::ForPos::VariantSerializer
 = admin_inject_json_ams_array "admin.pos", "products", @products, Api::Admin::ForPos::ProductSerializer
 
-
 .pos{ ng: { app: "admin.pos", controller: "POSCtrl" } }
   .row
     .small-5.columns
@@ -25,6 +24,7 @@
           %th Qty
           %th Price
           %th Total
+          %th &nbsp;
         %tr.item{ ng: {repeat: "lineItem in currentOrder.lineItems" } }
           %td.item-name
             %strong {{ lineItem.variant.product.name }}
@@ -38,10 +38,14 @@
             {{ lineItem.price }}
           %td
             %strong {{ lineItem.price * lineItem.quantity }}
+          %td
+            %h3
+              %a{ ng: { click: 'removeLineItem(lineItem)'} }
+                %i.fi-x
 
     .small-7.columns.variants
       %ul.small-block-grid-5
-        %li.variant.text-center{ ng: { repeat: "variant in variants | posFilter:query" }
+        %li.variant.text-center{ ng: { repeat: "variant in variants | posFilter:query", click: 'addLineItem(variant)' } }
           %img{ ng: { src: "{{::variant.product.primaryImageOrMissing}}" } }
           .product-name
             %strong {{ ::variant.product.name }}
