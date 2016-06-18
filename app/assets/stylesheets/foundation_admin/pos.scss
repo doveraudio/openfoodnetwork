@@ -4,6 +4,7 @@
   }
 
   .items {
+    overflow-x: auto;
     overflow-y: scroll;
     height: 80vh;
     .item {

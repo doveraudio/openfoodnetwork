@@ -34,7 +34,9 @@ angular.module("admin.pos").factory "LineItems", ($resource, lineItems, Orders, 
         order_id: order.number
         variant_id: variant.id
         quantity: 2
-      LineItemResource.add params, (lineItem) =>
+      LineItemResource.add params, (data) =>
+        angular.extend(order,data.order)
+        lineItem = data.line_item
         @all.push lineItem
         @byID[lineItem.id] = lineItem
         @linkToOrder(lineItem)
@@ -44,7 +46,8 @@ angular.module("admin.pos").factory "LineItems", ($resource, lineItems, Orders, 
       params =
         id: lineItem.id
         order_id: lineItem.order.number
-      LineItemResource.remove params, =>
+      LineItemResource.remove params, (data) =>
+        angular.extend(lineItem.order,data)
         lineItems = lineItem.order.lineItems
         index = lineItems.indexOf(lineItem)
         lineItems.splice(index, 1) if index > -1

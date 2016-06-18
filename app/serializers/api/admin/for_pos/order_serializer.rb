@@ -4,9 +4,6 @@ class Api::Admin::ForPos::OrderSerializer < ActiveModel::Serializer
   attributes :id, :number, :full_name, :email, :phone, :completed_at, :display_total
   attributes :subtotal, :admin_and_handling
 
-  has_one :distributor, serializer: Api::Admin::IdSerializer
-  has_one :order_cycle, serializer: Api::Admin::IdSerializer
-
   def subtotal
     display_checkout_subtotal(object).to_s
   end

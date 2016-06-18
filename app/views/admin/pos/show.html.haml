@@ -36,11 +36,11 @@
             {{ lineItem.quantity }}
           %td
             {{ lineItem.single_display_amount_with_adjustments }}
-          %td
+          %td.text-right
             %strong {{ lineItem.display_amount_with_adjustments }}
           %td
             %h3
-              %a{ ng: { click: 'removeLineItem(lineItem)'} }
+              %a.red{ ng: { click: 'removeLineItem(lineItem)'} }
                 %i.fi-x
         %tr
           %td.text-right{colspan:"4"}
