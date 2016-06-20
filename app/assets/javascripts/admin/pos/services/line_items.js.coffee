@@ -16,9 +16,12 @@ angular.module("admin.pos").factory "LineItems", ($resource, lineItems, Orders, 
     linkToOrders: ->
       for lineItem in @all
         @linkToOrder(lineItem)
+        @addToOrder(lineItem)
 
     linkToOrder: (lineItem) ->
       lineItem.order = Orders.byID[lineItem.order.id]
+
+    addToOrder: (lineItem) ->
       lineItem.order.lineItems ||= []
       lineItem.order.lineItems.push lineItem
 
@@ -27,20 +30,7 @@ angular.module("admin.pos").factory "LineItems", ($resource, lineItems, Orders, 
         @linkToVariant(lineItem)
 
     linkToVariant: (lineItem) ->
-        lineItem.variant = Variants.byID[lineItem.variant.id]
-
-    add: (order, variant) ->
-      params =
-        order_id: order.number
-        variant_id: variant.id
-        quantity: 2
-      LineItemResource.add params, (data) =>
-        angular.extend(order,data.order)
-        lineItem = data.line_item
-        @all.push lineItem
-        @byID[lineItem.id] = lineItem
-        @linkToOrder(lineItem)
-        @linkToVariant(lineItem)
+      lineItem.variant = Variants.byID[lineItem.variant.id]
 
     remove: (lineItem) ->
       params =

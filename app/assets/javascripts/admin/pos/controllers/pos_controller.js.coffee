@@ -1,4 +1,4 @@
-angular.module("admin.pos").controller "POSCtrl", ($scope, addresses, customers, Orders, LineItems, Products, Variants) ->
+angular.module("admin.pos").controller "POSCtrl", ($scope, addresses, customers, CurrentOrder, Orders, LineItems, Products, Variants) ->
   $scope.customers = customers
   $scope.orders = Orders.all
   $scope.variants = Variants.all
@@ -9,10 +9,11 @@ angular.module("admin.pos").controller "POSCtrl", ($scope, addresses, customers,
   Variants.linkToProducts(Products.byID)
 
   $scope.$watch 'currentOrderID', (newVal, oldVal) ->
-    $scope.currentOrder = Orders.byID[newVal]
+    CurrentOrder.order = Orders.byID[newVal]
+    $scope.currentOrder = CurrentOrder.order
 
   $scope.addLineItem = (variant) ->
-    LineItems.add($scope.currentOrder, variant)
+    CurrentOrder.addVariant(variant)
 
   $scope.removeLineItem = (lineItem) ->
     LineItems.remove(lineItem)

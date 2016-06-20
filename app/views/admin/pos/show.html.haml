@@ -34,33 +34,42 @@
             {{ lineItem.options_text }}
           %td
             {{ lineItem.quantity }}
+            -# %input{ type: 'number', ng: { model: 'lineItem.quantity' } }
           %td
             {{ lineItem.single_display_amount_with_adjustments }}
           %td.text-right
-            %strong {{ lineItem.display_amount_with_adjustments }}
+            %strong{ ng: { show: 'lineItem.display_amount_with_adjustments'} }
+              {{ lineItem.display_amount_with_adjustments }}
+            %img.spinner.small{ ng: {hide: 'lineItem.display_amount_with_adjustments' }, src: "/assets/spinning-circles.svg" }
           %td
             %h3
               %a.red{ ng: { click: 'removeLineItem(lineItem)'} }
-                %i.fi-x
+                %i.icon-remove-sign
         %tr
           %td.text-right{colspan:"4"}
             = t :orders_form_subtotal
           %td.text-right
-            %strong {{ currentOrder.subtotal }}
+            %strong{ ng: { show: 'currentOrder.subtotal' } }
+              {{ currentOrder.subtotal }}
+            %img.spinner.small{ ng: { hide: 'currentOrder.subtotal' }, src: "/assets/spinning-circles.svg" }
           %td
 
-        %tr
+        %tr{ ng: { show: 'currentOrder.admin_and_handling && currentOrder.admin_and_handling != ' } }
           %td.text-right{colspan:"4"}
             = t :orders_form_admin
           %td.text-right
-            %strong {{ currentOrder.admin_and_handling }}
+            %strong{ ng: { show: 'currentOrder.admin_and_handling' } }
+              {{ currentOrder.admin_and_handling }}
+            %img.spinner.small{ ng: { hide: 'currentOrder.admin_and_handling' }, src: "/assets/spinning-circles.svg" }
           %td
 
         %tr
           %td.text-right{colspan:"4"}
             %strong= t :orders_form_total
           %td.text-right
-            %strong {{ currentOrder.display_total }}
+            %strong{ ng: { show: 'currentOrder.display_total' } }
+              {{ currentOrder.display_total }}
+            %img.spinner.small{ ng: { hide: 'currentOrder.display_total' }, src: "/assets/spinning-circles.svg" }
           %td
 
         -# - if @order.total_tax > 0

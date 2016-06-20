@@ -9,7 +9,7 @@ class Admin::PosController < Spree::Admin::BaseController
     @customers = Customer.where(enterprise_id: @shop.id)
     @orders = Spree::Order.complete.where(distributor_id: @shop.id, order_cycle_id: @order_cycle.id)
     @line_items = Spree::LineItem.where(order_id: @orders)
-    @variants = Spree::Variant.visible_for(@shop).not_deleted
+    @variants = @order_cycle.variants_distributed_by(@shop)
     @products = Spree::Product.joins(:variants).where(spree_variants: { id: @variants})
   end
 

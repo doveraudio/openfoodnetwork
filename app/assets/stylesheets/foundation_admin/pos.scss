@@ -3,6 +3,20 @@
     width: "100%";
   }
 
+  img.spinner.small {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .icon-remove-sign{
+    margin-top: 0.4rem;
+    font-size: 1.5rem;
+    color: #DA5354;
+    &:hover {
+      color: darken(#DA5354, 20%);
+    }
+  }
+
   .items {
     overflow-x: auto;
     overflow-y: scroll;

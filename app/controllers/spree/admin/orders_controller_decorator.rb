@@ -98,6 +98,24 @@ Spree::Admin::OrdersController.class_eval do
     @order.update_distribution_charge!
   end
 
+  def populate
+    Spree::Adjustment.without_callbacks do
+      populator = Spree::OrderPopulator.new(@order, @order.currency)
+
+      if populator.populate(params.slice(:products, :variants, :quantity), true)
+        @order.cap_quantity_at_stock!
+        @order.update_distribution_charge!
+        @order.update!
+        line_items = ActiveModel::ArraySerializer.new(@order.line_items, each_serializer: Api::Admin::ForPos::LineItemSerializer)
+        order = Api::Admin::ForPos::OrderSerializer.new(@order).serializable_hash
+
+        render json: {line_items: line_items, order: order}, status: 200
+      else
+        render json: {error: true}, status: 412
+      end
+    end
+  end
+
   private
 
   def orders
