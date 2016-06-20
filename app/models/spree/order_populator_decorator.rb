@@ -3,6 +3,13 @@ require 'open_food_network/scope_variant_to_hub'
 Spree::OrderPopulator.class_eval do
   attr_reader :variants_h
 
+  def initialize(order, currency, opts={})
+    @order = order
+    @currency = currency
+    @errors = ActiveModel::Errors.new(self)
+    @ignore_inventory = opts[:ignore_inventory] || false
+  end
+
   def populate(from_hash, overwrite = false)
     @distributor, @order_cycle = distributor_and_order_cycle
     # Refactor: We may not need this validation - we can't change distribution here, so
@@ -58,6 +65,7 @@ Spree::OrderPopulator.class_eval do
     max_quantity = max_quantity.to_i if max_quantity
     variant = Spree::Variant.find(variant_id)
     OpenFoodNetwork::ScopeVariantToHub.new(@distributor).scope(variant)
+    variant.send(:extend, OnDemandVariant) if @ignore_inventory
     if quantity > 0 &&
        check_order_cycle_provided_for(variant) &&
        check_variant_available_under_distribution(variant)
@@ -140,5 +148,11 @@ Spree::OrderPopulator.class_eval do
 
   def variant_ids_in_cart
     @order.line_items.pluck :variant_id
+  end
+
+  module OnDemandVariant
+    def on_demand
+      true
+    end
   end
 end

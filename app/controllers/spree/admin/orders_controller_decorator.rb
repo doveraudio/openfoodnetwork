@@ -100,7 +100,7 @@ Spree::Admin::OrdersController.class_eval do
 
   def populate
     Spree::Adjustment.without_callbacks do
-      populator = Spree::OrderPopulator.new(@order, @order.currency)
+      populator = Spree::OrderPopulator.new(@order, @order.currency, ignore_inventory: true)
       from_hash = params.slice(:products, :variants, :quantity)
       marked_for_deletion = populator.send(:variants_removed, populator.read_variants(from_hash))
 
