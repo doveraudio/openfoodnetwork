@@ -26,18 +26,19 @@ angular.module("admin.pos").factory "CurrentOrder", ($http, $timeout, $filter, L
       else
         @update_enqueued = true
 
-    scheduleUpdate: (timeout=1000) =>
+    scheduleUpdate: (timeout=300) =>
       if @promise
         $timeout.cancel(@promise)
       @promise = $timeout @update, timeout
 
     update: =>
-      update_running = true
+      @update_running = true
 
       $http.post("/admin/orders/#{@order.number}/populate", @data()).success (data, status) =>
         @updateLineItem(attrs) for attrs in data.line_items
         @remove(id) for id in data.deleted
-        angular.extend(@order, data.order)
+        angular.extend(@order, data.order) unless @update_enqueued
+
 
         @update_running = false
 
@@ -71,7 +72,7 @@ angular.module("admin.pos").factory "CurrentOrder", ($http, $timeout, $filter, L
 
     updateLineItem: (attrs) =>
       lineItem = @findByVariantID(attrs.variant.id)
-      unless lineItem.quantity == 0 # unless this line item has subsequently been deleted
+      if lineItem.quantity == attrs.quantity # unless this line item has been altered in a subsequent request
         delete attrs.variant
         delete attrs.order
         angular.extend(lineItem, attrs)
