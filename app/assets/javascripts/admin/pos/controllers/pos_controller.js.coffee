@@ -16,4 +16,4 @@ angular.module("admin.pos").controller "POSCtrl", ($scope, addresses, customers,
     CurrentOrder.addVariant(variant)
 
   $scope.removeLineItem = (lineItem) ->
-    LineItems.remove(lineItem)
+    CurrentOrder.removeLineItem(lineItem)

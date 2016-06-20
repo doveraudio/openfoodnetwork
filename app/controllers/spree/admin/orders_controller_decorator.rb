@@ -101,15 +101,19 @@ Spree::Admin::OrdersController.class_eval do
   def populate
     Spree::Adjustment.without_callbacks do
       populator = Spree::OrderPopulator.new(@order, @order.currency)
+      from_hash = params.slice(:products, :variants, :quantity)
+      marked_for_deletion = populator.send(:variants_removed, populator.read_variants(from_hash))
 
-      if populator.populate(params.slice(:products, :variants, :quantity), true)
+      if populator.populate(from_hash, true)
         @order.cap_quantity_at_stock!
         @order.update_distribution_charge!
         @order.update!
-        line_items = ActiveModel::ArraySerializer.new(@order.line_items, each_serializer: Api::Admin::ForPos::LineItemSerializer)
-        order = Api::Admin::ForPos::OrderSerializer.new(@order).serializable_hash
 
-        render json: {line_items: line_items, order: order}, status: 200
+        order = Api::Admin::ForPos::OrderSerializer.new(@order).serializable_hash
+        line_items = ActiveModel::ArraySerializer.new(@order.line_items, each_serializer: Api::Admin::ForPos::LineItemSerializer)
+        deleted = marked_for_deletion - @order.line_items.map(&:variant_id)
+
+        render json: {order: order, line_items: line_items, deleted: deleted}, status: 200
       else
         render json: {error: true}, status: 412
       end

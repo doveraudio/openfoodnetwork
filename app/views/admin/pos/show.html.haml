@@ -25,7 +25,7 @@
           %th Price
           %th Total
           %th &nbsp;
-        %tr.item{ ng: {repeat: "lineItem in currentOrder.lineItems" } }
+        %tr.item{ ng: {repeat: "lineItem in currentOrder.lineItems", show: "lineItem.quantity != 0"} }
           %td.item-name
             %strong {{ lineItem.variant.product.name }}
             %br
@@ -54,7 +54,7 @@
             %img.spinner.small{ ng: { hide: 'currentOrder.subtotal' }, src: "/assets/spinning-circles.svg" }
           %td
 
-        %tr{ ng: { show: 'currentOrder.admin_and_handling && currentOrder.admin_and_handling != ' } }
+        %tr
           %td.text-right{colspan:"4"}
             = t :orders_form_admin
           %td.text-right

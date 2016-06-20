@@ -4,12 +4,17 @@ angular.module("admin.pos").factory "CurrentOrder", ($http, $timeout, $filter, L
     update_running: false
     update_enqueued: false
 
+    removeLineItem: (lineItem) ->
+      lineItem.quantity = 0
+      @clearTotals()
+      @triggerChange()
+
     addVariant: (variant) =>
-      existing = @findByVariantID(variant.id)
-      if existing?
-        existing.display_amount_with_adjustments = null
-        existing.order
-        existing.quantity += 1
+      lineItem = @findByVariantID(variant.id)
+      if lineItem?
+        lineItem.display_amount_with_adjustments = null
+        lineItem.order
+        lineItem.quantity += 1
       else
         @order.lineItems.push { order: @order, variant: variant, quantity: 1 }
       @clearTotals()
@@ -31,6 +36,7 @@ angular.module("admin.pos").factory "CurrentOrder", ($http, $timeout, $filter, L
 
       $http.post("/admin/orders/#{@order.number}/populate", @data()).success (data, status) =>
         @updateLineItem(attrs) for attrs in data.line_items
+        @remove(id) for id in data.deleted
         angular.extend(@order, data.order)
 
         @update_running = false
@@ -65,12 +71,22 @@ angular.module("admin.pos").factory "CurrentOrder", ($http, $timeout, $filter, L
 
     updateLineItem: (attrs) =>
       lineItem = @findByVariantID(attrs.variant.id)
-      delete attrs.variant
-      delete attrs.order
-      angular.extend(lineItem, attrs)
-      unless LineItems.byID[lineItem.id]
-        LineItems.all.push lineItem
-        LineItems.byID[attrs.id] = lineItem
+      unless lineItem.quantity == 0 # unless this line item has subsequently been deleted
+        delete attrs.variant
+        delete attrs.order
+        angular.extend(lineItem, attrs)
+        unless LineItems.byID[lineItem.id]
+          LineItems.all.push lineItem
+          LineItems.byID[attrs.id] = lineItem
+
+    remove: (id) ->
+      lineItem = @findByVariantID(id)
+      if lineItem.quantity == 0 # if this line item hasn't been subsequently added again
+        index = @order.lineItems.indexOf(lineItem)
+        @order.lineItems.splice(index, 1) if index > -1
+        index = LineItems.all.indexOf(lineItem)
+        LineItems.all.splice(index, 1) if index > -1
+        LineItems.byID[lineItem.id] = lineItem
 
     findByVariantID: (variantID) ->
       $filter('filter')(@order.lineItems, (lineItem) -> lineItem.variant.id == variantID)[0]
