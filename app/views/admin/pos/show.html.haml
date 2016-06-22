@@ -11,7 +11,7 @@
       %input.order-select{ type: 'hidden', ng: { model: "currentOrderID" }, data: "orders" }
 
     .small-7.columns
-      %input{ type: "text", placeholder: "Search for a product", ng: { model: 'query' } }
+      %input.variant-select{ type: "text", placeholder: "Search for a product", ng: { model: 'query' } }
 
   .row
     .small-5.columns.items
@@ -81,7 +81,10 @@
 
     .small-7.columns.variants
       %ul.small-block-grid-5
-        %li.variant.text-center{ ng: { repeat: "variant in variants | posFilter:query", click: 'addLineItem(variant)' } }
+        %li.variant.text-center{ ng: { repeat: "variant in variants | posFilter:query as filteredVariants",
+          class: "{selected: variant == selectedVariant}",
+          click: 'addLineItem(variant)' } }
+
           %img{ ng: { src: "{{::variant.product.primaryImageOrMissing}}" } }
           .product-name
             %strong {{ ::variant.product.name }}

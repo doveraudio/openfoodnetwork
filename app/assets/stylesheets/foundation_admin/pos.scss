@@ -43,6 +43,12 @@
         cursor: pointer;
       }
 
+      &.selected {
+        border: 1px solid #209348;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
       .product-name, .variant-name {
         white-space: nowrap;
         overflow-x: hidden;
