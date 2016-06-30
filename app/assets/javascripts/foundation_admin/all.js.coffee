@@ -6,3 +6,8 @@
 #
 
 #= require ../admin/all
+#= require modernizr
+#= require foundation
+
+$ ->
+  $(document).foundation()

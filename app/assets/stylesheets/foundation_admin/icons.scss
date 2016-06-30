@@ -1,0 +1,24 @@
+[class*='icon-'].no-text {
+  background-color: #ffffff;
+  border: 3px solid #cee1f4;
+  border-radius: 15px;
+  width: 29px;
+  height: 29px;
+  display: inline-block;
+  text-align: center;
+  padding-top: 2px;
+
+  &.red { border-color: #DA5354; }
+  &.green { border-color: #209348; }
+
+  &:hover {
+    &.red {
+      color: darken(#DA5354, 10%);
+      border-color: darken(#DA5354, 10%);
+    }
+    &.green {
+      color: darken(#209348, 10%);
+      border-color: darken(#209348, 10%);
+    }
+  }
+}

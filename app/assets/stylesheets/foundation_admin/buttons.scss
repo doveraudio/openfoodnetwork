@@ -1,0 +1,14 @@
+a.button {
+  &.red {
+    background-color: #DA5354;
+    &:hover {
+      background-color: darken(#DA5354, 10%);
+    }
+  }
+  &.green {
+    background-color: #209348;
+    &:hover {
+      background-color: darken(#209348, 10%);
+    }
+  }
+}

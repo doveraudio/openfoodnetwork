@@ -3,6 +3,9 @@ class Api::Admin::ForPos::OrderSerializer < ActiveModel::Serializer
 
   attributes :id, :number, :full_name, :email, :phone, :completed_at, :display_total
   attributes :subtotal, :admin_and_handling
+  attributes :payment_total, :outstanding_balance, :display_outstanding_balance
+
+  has_many :payments, serializer: Api::Admin::ForPos::PaymentSerializer
 
   def subtotal
     display_checkout_subtotal(object).to_s
@@ -14,6 +17,10 @@ class Api::Admin::ForPos::OrderSerializer < ActiveModel::Serializer
 
   def display_total
     object.display_total.to_s
+  end
+
+  def display_outstanding_balance
+    object.display_outstanding_balance.to_s
   end
 
   def full_name

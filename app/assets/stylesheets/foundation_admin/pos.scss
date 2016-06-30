@@ -17,17 +17,22 @@
     }
   }
 
-  .items {
+  .order {
     overflow-x: auto;
     overflow-y: scroll;
-    height: 80vh;
-    .item {
+    height: calc(80vh - 80px);
+
+    &.item {
       .item-name {
         white-space: nowrap;
         overflow-x: hidden;
         text-overflow: ellipsis;
       }
     }
+  }
+
+  .actions{
+    min-height: 80px;
   }
 
   .variants{
