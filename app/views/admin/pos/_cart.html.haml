@@ -1,0 +1,77 @@
+%input.order-select{ type: 'hidden', ng: { model: "currentOrderID" }, data: "orders" }
+
+.cart
+  .no-order-selected{ ng: { if: "!currentOrder" } }
+    No Order Selected
+  .order.table{ ng: { show: "currentOrder" } }
+    .row.header
+      .small-6.columns Item
+      .small-1.columns.text-right Qty
+      .small-2.columns.text-right Price
+      .small-2.columns.text-right Total
+      .small-1.columns &nbsp;
+    .row.item{ ng: {repeat: "lineItem in currentOrder.lineItems", show: "lineItem.quantity != 0"} }
+      .small-6.columns.item-name
+        %strong {{ lineItem.variant.product.name }}
+        %br
+        {{ lineItem.variant.full_name }}
+      .small-1.columns.text-right {{ lineItem.quantity }}
+      .small-2.columns.text-right {{ lineItem.single_display_amount_with_adjustments }}
+      .small-2.columns.text-right
+        %strong{ ng: { show: 'lineItem.display_amount_with_adjustments'} }
+          {{ lineItem.display_amount_with_adjustments }}
+        %img.spinner.small{ ng: {hide: 'lineItem.display_amount_with_adjustments' }, src: "/assets/spinning-circles.svg" }
+      .small-1.columns
+        %h3
+          %a.red{ ng: { click: 'removeLineItem(lineItem)'} }
+            %i.icon-remove-sign
+
+    .row
+      .small-9.columns.text-right= t(:orders_form_subtotal)
+      .small-2.columns.text-right
+        %strong{ ng: { show: 'currentOrder.display_subtotal' } }
+          {{ currentOrder.display_subtotal }}
+        %img.spinner.small{ ng: { hide: 'currentOrder.display_subtotal' }, src: "/assets/spinning-circles.svg" }
+      .small-1.columns &nbsp;
+
+    .row
+      .small-9.columns.text-right= t(:orders_form_admin)
+      .small-2.columns.text-right
+        %strong{ ng: { show: 'currentOrder.display_admin_and_handling' } }
+          {{ currentOrder.display_admin_and_handling }}
+        %img.spinner.small{ ng: { hide: 'currentOrder.display_admin_and_handling' }, src: "/assets/spinning-circles.svg" }
+      .small-1.columns &nbsp;
+
+    .row
+      .small-9.columns.text-right
+        = t(:orders_form_total)
+        %span{ ng: { if: 'currentOrder.payment_total > 0' } }
+          ({{currentOrder.display_payment_total}} Paid)
+      .small-2.columns.text-right
+        %strong{ ng: { show: 'currentOrder.display_total' } }
+          {{ currentOrder.display_total }}
+        %img.spinner.small{ ng: { hide: 'currentOrder.display_total' }, src: "/assets/spinning-circles.svg" }
+      .small-1.columns &nbsp;
+
+.row.actions{ ng: { show: "currentOrder" } }
+  .small-12.columns
+    %a.button.fullwidth.red{ href: 'javascript:void(0)', ng: { click: "config.view = 'pay'", show: 'currentOrder.outstanding_balance > 0' } }
+      To Pay: {{ currentOrder.display_outstanding_balance }}
+    %a.button.fullwidth.green{ href: 'javascript:void(0)', ng: { click: "config.view = 'pay'", show: 'currentOrder.outstanding_balance == 0' } }
+      Paid in full
+      %i.icon-ok
+    %a.button.fullwidth.orange{ href: 'javascript:void(0)', ng: { click: "config.view = 'pay'", show: 'currentOrder.outstanding_balance < 0' } }
+      Refund: {{ currentOrder.display_outstanding_balance }}
+    %a.button.fullwidth.grey{ href: 'javascript:void(0)', ng: { show: 'currentOrder.outstanding_balance == null' } }
+      Updating
+      %img.spinner.small{ src: "/assets/spinning-circles.svg" }
+
+.row.actions{ ng: { show: "currentOrder" } }
+  .small-6.columns
+    %a.button.fullwidth{ href: 'javascript:void(0)' }
+      Order Notes
+      %i.icon-comment
+  .small-6.columns
+    %a.button.fullwidth{ href: 'javascript:void(0)' }
+      Mark as Collected
+      %i.icon-truck

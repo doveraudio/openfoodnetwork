@@ -93,8 +93,10 @@ angular.module("admin.pos").factory "CurrentOrder", ($http, $timeout, $filter, L
       $filter('filter')(@order.lineItems, (lineItem) -> lineItem.variant.id == variantID)[0]
 
     clearTotals: ->
-      @order.subtotal = null
-      @order.admin_and_handling = null
+      @order.display_subtotal = null
+      @order.display_admin_and_handling = null
+      @order.outstanding_balance = null
+      @order.display_outstanding_balance = null
       @order.display_total = null
 
     # saved: =>

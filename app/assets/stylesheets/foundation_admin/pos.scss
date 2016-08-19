@@ -1,8 +1,4 @@
 .pos{
-  .fullwidth {
-    width: "100%";
-  }
-
   img.spinner.small {
     width: 1.5rem;
     height: 1.5rem;
@@ -20,7 +16,7 @@
   .order {
     overflow-x: auto;
     overflow-y: scroll;
-    height: calc(80vh - 80px);
+    height: calc(100vh - 142px);
 
     &.item {
       .item-name {
@@ -31,8 +27,11 @@
     }
   }
 
-  .actions{
-    min-height: 80px;
+  .row.actions {
+    padding-bottom: 0px;
+    .button {
+      margin: 0;
+    }
   }
 
   .variants{

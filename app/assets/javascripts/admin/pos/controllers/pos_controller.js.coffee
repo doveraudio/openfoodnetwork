@@ -3,6 +3,7 @@ angular.module("admin.pos").controller "POSCtrl", ($scope, addresses, customers,
   $scope.orders = Orders.all
   $scope.variants = Variants.all
   $scope.currentOrderID = 0
+  $scope.config = { view: 'products' }
 
   LineItems.linkToOrders(Orders.byID)
   LineItems.linkToVariants(Variants.byID)
@@ -11,6 +12,7 @@ angular.module("admin.pos").controller "POSCtrl", ($scope, addresses, customers,
   $scope.$watch 'currentOrderID', (newVal, oldVal) ->
     CurrentOrder.order = Orders.byID[newVal]
     $scope.currentOrder = CurrentOrder.order
+    $scope.config.view = 'products'
 
   $scope.addLineItem = (variant) ->
     CurrentOrder.addVariant(variant)

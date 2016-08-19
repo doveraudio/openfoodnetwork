@@ -1,5 +1,5 @@
 = admin_inject_json_ams_array "admin.pos", "addresses", @addresses, Api::Admin::AddressSerializer
-= admin_inject_json_ams_array "admin.pos", "customers", @customers, Api::Admin::CustomerSerializer
+= admin_inject_json_ams_array "admin.pos", "customers", @customers, Api::Admin::ForPos::CustomerSerializer
 = admin_inject_json_ams_array "admin.pos", "orders", @orders, Api::Admin::ForPos::OrderSerializer
 = admin_inject_json_ams_array "admin.pos", "lineItems", @line_items, Api::Admin::ForPos::LineItemSerializer
 = admin_inject_json_ams_array "admin.pos", "variants", @variants, Api::Admin::ForPos::VariantSerializer
@@ -7,181 +7,15 @@
 
 .pos{ ng: { app: "admin.pos", controller: "POSCtrl" } }
   .row
-    .small-5.columns
-      %input.order-select{ type: 'hidden', ng: { model: "currentOrderID" }, data: "orders" }
+    .small-12.medium-6.large-5.columns
+      = render 'cart'
+    .small-12.medium-6.large-7.columns{ ng: { switch: 'config.view' } }
+      = render 'products'
+      = render 'pay'
 
-    .small-7.columns
-      %input.variant-select{ type: "text", placeholder: "Search for a product", ng: { model: 'query' } }
-
-  .row
-    .small-5.columns.cart
-      .no-order-selected{ ng: { if: "!currentOrder" } }
-        No Order Selected
-      .order.table{ ng: { show: "currentOrder" } }
-        .row.header
-          .small-6.columns Item
-          .small-1.columns.text-right Qty
-          .small-2.columns.text-right Price
-          .small-2.columns.text-right Total
-          .small-1.columns &nbsp;
-        .row.item{ ng: {repeat: "lineItem in currentOrder.lineItems", show: "lineItem.quantity != 0"} }
-          .small-6.columns.item-name
-            %strong {{ lineItem.variant.product.name }}
-            %br
-            {{ lineItem.variant.full_name }}
-          .small-1.columns.text-right {{ lineItem.quantity }}
-          .small-2.columns.text-right {{ lineItem.single_display_amount_with_adjustments }}
-          .small-2.columns.text-right
-            %strong{ ng: { show: 'lineItem.display_amount_with_adjustments'} }
-              {{ lineItem.display_amount_with_adjustments }}
-            %img.spinner.small{ ng: {hide: 'lineItem.display_amount_with_adjustments' }, src: "/assets/spinning-circles.svg" }
-          .small-1.columns
-            %h3
-              %a.red{ ng: { click: 'removeLineItem(lineItem)'} }
-                %i.icon-remove-sign
-
-        .row
-          .small-9.columns.text-right= t(:orders_form_subtotal)
-          .small-2.columns.text-right
-            %strong{ ng: { show: 'currentOrder.subtotal' } }
-              {{ currentOrder.subtotal }}
-            %img.spinner.small{ ng: { hide: 'currentOrder.subtotal' }, src: "/assets/spinning-circles.svg" }
-          .small-1.columns &nbsp;
-
-        .row
-          .small-9.columns.text-right= t(:orders_form_admin)
-          .small-2.columns.text-right
-            %strong{ ng: { show: 'currentOrder.admin_and_handling' } }
-              {{ currentOrder.admin_and_handling }}
-            %img.spinner.small{ ng: { hide: 'currentOrder.admin_and_handling' }, src: "/assets/spinning-circles.svg" }
-          .small-1.columns &nbsp;
-
-        .row
-          .small-9.columns.text-right= t(:orders_form_total)
-          .small-2.columns.text-right
-            %strong{ ng: { show: 'currentOrder.display_total' } }
-              {{ currentOrder.display_total }}
-            %img.spinner.small{ ng: { hide: 'currentOrder.display_total' }, src: "/assets/spinning-circles.svg" }
-          .small-1.columns &nbsp;
-      .actions{ ng: { show: "currentOrder" } }
-        .small-3.columns
-          %a.button{ href: '#'}
-            Notes
-        .small-3.columns
-          %a.button{ href: '#'}
-            Park
-        .small-3.columns
-          %a.button{ href: '#', data: { reveal: { id: "pay-modal" } } }
-            Pay
-        .small-3.columns
-          %a.button{ href: '#'}
-            Complete
-
-        #pay-modal.small.reveal-modal{ aria: { hidden: "true" }, data: { reveal: ""}, :role => "dialog"}
-          -# .row.outstanding
-          -#   .small-12.columns.text-center
-          -#     %h2{ ng: { show: 'currentOrder.outstanding_balance > 0' } }
-          -#       Outstanding balance:
-          -#       %span.red {{ currentOrder.display_outstanding_balance }}
-          -#     %h2.green{ ng: { show: 'currentOrder.outstanding_balance == 0' } }
-          -#       Paid in full
-          -#       %i.icon-ok-sign
-          -#     %h2{ ng: { show: 'currentOrder.outstanding_balance < 0' } }
-          -#       Owed refund of:
-          -#       %span.green {{ currentOrder.display_outstanding_balance }}
-          .row
-            -# .small-12.columns
-            -#   %h4 Make a new payment
-            -#   .row
-            -#     .small-4.columns
-            -#       Amount:
-            -#     .small-8.columns
-            -#       %input{ type: "number" }
-            -#   .row
-            -#     .small-4.columns
-            -#       Tendered:
-            -#     .small-8.columns
-            -#       %input{ type: "number" }
-            -#   .row
-            -#     .small-4.columns
-            -#       Change:
-            -#     .small-8.columns
-            -#       $x.xx
-            -#   .row
-            -#     .small-6.columns.text-center
-            -#       %a.button.small.green
-            -#         Pay
-            -#     .small-6.columns.text-center
-            -#       %a.button.small.red
-            -#         Cancel
-            .small-12.columns
-              %h4 Payments
-              .payments.table
-                .row.header
-                  .small-5.columns Type
-                  .small-3.columns State
-                  .small-2.columns.text-right Amount
-                  .small-2.columns &nbsp;
-                .row{ ng: { repeat: 'payment in currentOrder.payments' } }
-                  .small-5.columns {{ payment.payment_method.name }}
-                  .small-3.columns {{ payment.state }}
-                  .small-2.columns.text-right {{ payment.amount }}
-                  .small-2.columns.text-right
-                    %i.no-text.red.icon-remove
-                    %i.no-text.green.icon-ok
-                .row
-                  .small-8.columns.text-right Total Payments Received
-                  .small-2.columns.text-right {{ currentOrder.payment_total }}
-                  .small-2.columns &nbsp;
-                .row
-                  .small-8.columns.text-right Order Total
-                  .small-2.columns.text-right {{ currentOrder.display_total }}
-                  .small-2.columns &nbsp;
-                .row
-                  .small-8.columns.text-right
-                    %h4{ ng: { show: 'currentOrder.outstanding_balance >= 0'}} Outstanding Balance
-                    %h4{ ng: { hide: 'currentOrder.outstanding_balance >= 0'}} Refund Owed
-                  .small-2.columns.text-right
-                    %h4{ ng: { class: "(currentOrder.outstanding_balance == 0 ? 'green' : 'red')" } }
-                      {{ currentOrder.display_outstanding_balance }}
-                  .small-2.columns &nbsp;
-
-              .row
-                .small-12.columns.text-center
-                  %h4 Pay Now Via
-              .row
-                .small-3.columns
-                  %a.button
-                    Cash
-                .small-3.columns
-                  %a.button
-                    Card
-                .small-3.columns
-                  %a.button
-                    EFT
-                .small-3.columns
-                  %a.button
-                    Account
-
-
-          %a.close-reveal-modal{ aria: { label: "Close" } } ×
-
-
-        -# - if @order.total_tax > 0
-        -#   %tr
-        -#     %td.text-right{colspan:"3"} (includes tax)
-        -#     %td.text-right
-        -#       %span.order-total.tax-total= display_checkout_tax_total(@order)
-        -#     %td
-
-    .small-7.columns.variants
-      %ul.small-block-grid-5
-        %li.variant.text-center{ ng: { repeat: "variant in variants | posFilter:query as filteredVariants",
-          class: "{selected: variant == selectedVariant}",
-          click: 'addLineItem(variant)' } }
-
-          %img{ ng: { src: "{{::variant.product.primaryImageOrMissing}}" } }
-          .product-name
-            %strong {{ ::variant.product.name }}
-          .variant-name
-            {{ ::variant.full_name }}
+    -# - if @order.total_tax > 0
+    -#   %tr
+    -#     %td.text-right{colspan:"3"} (includes tax)
+    -#     %td.text-right
+    -#       %span.order-total.tax-total= display_checkout_tax_total(@order)
+    -#     %td

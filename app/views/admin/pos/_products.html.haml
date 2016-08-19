@@ -1,0 +1,14 @@
+.products{ ng: { switch: { when: 'products' } } }
+  %input.variant-select{ type: "text", placeholder: "Search for a product", ng: { model: 'query' } }
+
+  .variants
+    %ul.small-block-grid-2.medium-block-grid-3.large-block-grid-5
+      %li.variant.text-center{ ng: { repeat: "variant in variants | posFilter:query as filteredVariants",
+        class: "{selected: variant == selectedVariant}",
+        click: 'addLineItem(variant)' } }
+
+        %img{ ng: { src: "{{::variant.product.primaryImageOrMissing}}" } }
+        .product-name
+          %strong {{ ::variant.product.name }}
+        .variant-name
+          {{ ::variant.full_name }}

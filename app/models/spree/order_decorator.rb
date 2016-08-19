@@ -199,6 +199,10 @@ Spree::Order.class_eval do
     adjustments.eligible.where("originator_type = ? AND source_type != ?", 'EnterpriseFee', 'Spree::LineItem').sum(&:amount)
   end
 
+  def display_payment_total
+    Spree::Money.new(payment_total, { :currency => currency })
+  end
+
   def payment_fee
     adjustments.payment_fee.map(&:amount).sum
   end

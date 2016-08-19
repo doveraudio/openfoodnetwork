@@ -10,6 +10,27 @@ Spree::Admin::PaymentsController.class_eval do
     redirect_to request.referer  # Keeps any filter and sort prefs
   } } }
 
+  respond_override create: { json: { success: lambda {
+    if request.referrer == main_app.admin_pos_url
+      order = Api::Admin::ForPos::OrderSerializer.new(@order.reload).serializable_hash
+      render json: { order: order }
+    else
+      render_as_json @payment.reload
+    end
+  } } }
+
+  def update
+  if @line_item.update_attributes(params[:line_item])
+    respond_with(@line_item) do |format|
+      format.html { render :partial => 'spree/admin/orders/form', :locals => { :order => @order.reload } }
+    end
+  else
+    respond_with(@line_item) do |format|
+      format.html { render :partial => 'spree/admin/orders/form', :locals => { :order => @order.reload } }
+    end
+  end
+end
+
   append_before_filter :filter_payment_methods
 
   # Only show payments for the order's distributor

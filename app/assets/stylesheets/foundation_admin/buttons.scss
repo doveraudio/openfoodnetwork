@@ -11,4 +11,16 @@ a.button {
       background-color: darken(#209348, 10%);
     }
   }
+
+  &.orange {
+    background-color: #DA7F52;
+    &:hover {
+      background-color: darken(#DA7F52, 10%);
+    }
+  }
+
+  &.grey {
+    background-color: #f0f0f0;
+    color: #777777;
+  }
 }
