@@ -1,4 +1,4 @@
-.products{ ng: { switch: { when: 'products' } } }
+.products{ ng: { show: "config.view == 'products'" } }
   %input.variant-select{ type: "text", placeholder: "Search for a product", ng: { model: 'query' } }
 
   .variants

@@ -1,4 +1,4 @@
-.pay{ ng: { controller: 'PayController', switch: { when: 'pay' } } }
+.pay{ ng: { controller: 'PayController', show: "config.view == 'pay'" } }
   .row
     .small-12.columns
       %h4 Payments
@@ -52,7 +52,7 @@
           %a.green.button.small.fullwidth{ href: '#', data: { reveal: { id: "pay-modal" } } }
             %i.icon-ok
             Pay Now
-          #pay-modal.small.reveal-modal{ aria: { hidden: "true" }, data: { reveal: true}, :role => "dialog"}
+          #pay-modal.small.reveal-modal{ aria: { hidden: "true" }, data: { reveal: true }, role: "dialog" }
             .row
               .small-12.columns.text-center
                 %h4 Pay ${{ amountToPay }} Via:
