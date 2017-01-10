@@ -11,6 +11,7 @@ class Admin::PosController < Spree::Admin::BaseController
     @line_items = Spree::LineItem.preload(:order, :variant).where(order_id: @orders)
     @variants = Spree::Variant.where(id: @line_items.pluck(:variant_id)).preload(:product) | @order_cycle.variants_distributed_by(@shop).preload(:product)
     @products = Spree::Product.preload(:supplier, :taxons, master: :images).joins(:variants).where(spree_variants: { id: @variants})
+    @payment_methods = @shop.payment_methods.where(type: "Spree::PaymentMethod::Check")
   end
 
   private

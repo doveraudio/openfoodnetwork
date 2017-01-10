@@ -1,4 +1,6 @@
 Spree::Admin::PaymentsController.class_eval do
+  respond_to :json
+
   # When a user fires an event, take them back to where they came from
   # Responder: http://guides.spreecommerce.com/developer/logic.html#overriding-controller-action-responses
 
@@ -12,11 +14,15 @@ Spree::Admin::PaymentsController.class_eval do
 
   respond_override create: { json: { success: lambda {
     if request.referrer == main_app.admin_pos_url
+      @payment.capture!
       order = Api::Admin::ForPos::OrderSerializer.new(@order.reload).serializable_hash
       render json: { order: order }
     else
       render_as_json @payment.reload
     end
+  },
+  failure: lambda {
+    binding.pry
   } } }
 
   def update

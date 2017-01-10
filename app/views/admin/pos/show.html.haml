@@ -4,6 +4,7 @@
 = admin_inject_json_ams_array "admin.pos", "lineItems", @line_items, Api::Admin::ForPos::LineItemSerializer
 = admin_inject_json_ams_array "admin.pos", "variants", @variants, Api::Admin::ForPos::VariantSerializer
 = admin_inject_json_ams_array "admin.pos", "products", @products, Api::Admin::ForPos::ProductSerializer
+= admin_inject_json_ams_array "admin.pos", "paymentMethods", @payment_methods, Api::Admin::IdNameSerializer
 
 .pos{ ng: { app: "admin.pos", controller: "POSCtrl" } }
   .row

@@ -1,5 +1,6 @@
-angular.module("admin.pos").controller "POSCtrl", ($scope, addresses, customers, CurrentOrder, Orders, LineItems, Products, Variants) ->
+angular.module("admin.pos").controller "POSCtrl", ($scope, addresses, customers, paymentMethods, CurrentOrder, Orders, LineItems, Products, Variants) ->
   $scope.customers = customers
+  $scope.paymentMethods = paymentMethods
   $scope.orders = Orders.all
   $scope.variants = Variants.all
   $scope.currentOrderID = 0

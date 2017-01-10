@@ -24,16 +24,16 @@
             %strong {{ currentOrder.display_payment_total }}
           .small-2.columns &nbsp;
 
-  %hr
+  %hr.margin-bottom-30
 
-  .row
+  .row{ ng: { hide: 'currentOrder.outstanding_balance == 0' } }
     .small-8.small-centered.columns
       %h4.text-center New Payment
       .row
         .small-4.columns
           Amount To Pay:
         .small-8.columns
-          %input{ type: "number", step: '0.01', ng: { model: 'amountToPay' } }
+          %input{ type: "number", step: '0.01', ng: { model: 'payment.amount' } }
       .row
         .small-4.columns
           Amount Tendered:
@@ -44,37 +44,47 @@
           Change Owed:
         .small-8.columns
           %input{ type: "number", step: '0.01', disabled: true, ng: { model: "changeOwed" } }
-
-  .row
-    .small-8.small-centered.columns
       .row
         .small-6.columns
-          %a.green.button.small.fullwidth{ href: '#', data: { reveal: { id: "pay-modal" } } }
+          %a.red.button.fullwidth{ href: '#', data: { reveal: { id: "pay-modal" } } }
             %i.icon-ok
-            Pay Now
-          #pay-modal.small.reveal-modal{ aria: { hidden: "true" }, data: { reveal: true }, role: "dialog" }
-            .row
-              .small-12.columns.text-center
-                %h4 Pay ${{ amountToPay }} Via:
-            .row
-              .small-6.columns
-                %a.button.small.fullwidth
-                  Cash
-              .small-6.columns
-                %a.button.small.fullwidth
-                  Card
-            .row
-              .small-6.columns
-                %a.button.small.fullwidth
-                  EFT
-              .small-6.columns
-                %a.button.small.fullwidth
-                  Account
-            %a.close-reveal-modal{ aria: { label: "Close" } } ×
+            Pay
         .small-6.columns
-          %a.button.red.small.fullwidth{ href: 'javascript:void(0)', ng: { click: "config.view = 'products'"} }
+          %a.button.green.fullwidth{ href: 'javascript:void(0)', ng: { click: "config.view = 'products'"} }
             %i.icon-chevron-left
             Back to Products
+  %div{ ng: { show: 'currentOrder.outstanding_balance == 0' } }
+    .row
+      .small-12.columns.text-center
+        %h3.paid-in-full.margin-bottom-30
+          This order has been paid for in full
+          %i.icon-ok
+    .row
+      .small-6.columns.small-centered
+        %a.button.green.fullwidth{ href: 'javascript:void(0)', ng: { click: "config.view = 'products'"} }
+          %i.icon-chevron-left
+          Back to Products
+
+
+  #pay-modal.small.reveal-modal{ aria: { hidden: "true" }, data: { reveal: true }, role: "dialog" }
+    .row
+      .small-12.columns.text-center
+        %h4 Pay {{ payment.amount | currency }} Via:
+    .row{ ng: { repeat: 'paymentMethod in paymentMethods' } }
+      .small-8.columns.small-centered
+        %a.button.payment-method.fullwidth{ ng: { click: 'payment.payment_method_id = paymentMethod.id',
+          class: '{selected: payment.payment_method_id == paymentMethod.id}' },
+          href: "javascript:void(0)" }
+          {{ paymentMethod.name }}
+          %i.icon-ok{ ng: { show: "payment.payment_method_id == paymentMethod.id" } }
+    .row
+      .small-6.columns
+        %a.button.fullwidth.red{ ng: { click: 'createPayment()', class: '{disabled: !payment.payment_method_id}', hide: 'inProgress' } }
+          Pay Now
+        %div{ ng: { show: 'inProgress' } }
+          Processing Payment
+          %img.spinner.small{ src: "/assets/spinning-circles.svg" }
+    %a.close-reveal-modal{ aria: { label: "Close" } } ×
 
 
   -#

@@ -60,4 +60,16 @@
       }
     }
   }
+
+  .pay {
+    h3.paid-in-full {
+      color: #209348;
+    }
+  }
+}
+
+#pay-modal {
+  a.button.payment-method.selected {
+    @extend a.button.green;
+  }
 }
