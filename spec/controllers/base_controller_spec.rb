@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe BaseController, :type => :controller do
-  let(:oc)    { mock_model(OrderCycle) }
-  let(:hub)   { mock_model(Enterprise, ready_for_checkout?: true) }
-  let(:order) { mock_model(Spree::Order, distributor: hub) }
+  let(:oc)    { double(:order_cycle, id: 1) }
+  let(:hub)   { double(:enterprise, ready_for_checkout?: true) }
+  let(:order) { double(:order, distributor: hub) }
   controller(BaseController) do
     def index
       render text: ""
