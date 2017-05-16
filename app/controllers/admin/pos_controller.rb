@@ -1,10 +1,13 @@
 class Admin::PosController < Spree::Admin::BaseController
   layout 'admin/bare_foundation'
 
-  def show
-    @shop = Enterprise.find(119)
-    @order_cycle = OrderCycle.with_distributor(@shop).order('orders_close_at ASC').last
+  before_filter :ensure_shop_and_oc_selected, only: :data
 
+  def show
+    @shops = Enterprise.managed_by(spree_current_user)
+  end
+
+  def data
     @addresses = Spree::Address.preload(:state, :country).joins(shipments: :order).where(spree_orders: { distributor_id: @shop.id})
     @customers = Customer.where(enterprise_id: @shop.id)
     @orders = Spree::Order.preload(payments: :payment_method).complete.where(distributor_id: @shop.id, order_cycle_id: @order_cycle.id)
@@ -15,6 +18,13 @@ class Admin::PosController < Spree::Admin::BaseController
   end
 
   private
+
+  def ensure_shop_and_oc_selected
+    @shop = Enterprise.find_by_id(params[:shop_id])
+    @order_cycle = OrderCycle.find_by_id(params[:order_cycle_id])
+    render_scope unless @shop && @order_cycle
+    authorize! :
+  end
 
   def model_class
     # Slightly hacky way of getting correct authorisation for actions
